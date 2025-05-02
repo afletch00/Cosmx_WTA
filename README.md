@@ -1,6 +1,14 @@
 # Cosmx_WTA
 
-## Features
+## What we will do in this short analysis:
+- Explore a spatial single-cell pancreas dataset
+- look at different cells types within the pancreas
+- Look at where genes are located within certain cells
+- Run a quick differentially expressed gene analysis
+- visualize DEGs with a volcano plot
+- Allow you to explore the dataset on your own
+
+- 
 - Easy to edit
 - Supports **bold**, *italic*, and \`code\`
 - Can include [links](https://example.com)
