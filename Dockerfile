@@ -1,12 +1,13 @@
-FROM rocker/rstudio:4.3.1
+FROM rocker/tidyverse
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install system dependencies
+# Fix SSL issues and install all system dependencies needed for CRAN + Bioconductor
 RUN apt-get update && apt-get install -y \
-    libxml2-dev \
-    libcurl4-openssl-dev \
+    ca-certificates \
     libssl-dev \
+    libcurl4-openssl-dev \
+    libxml2-dev \
     libhdf5-dev \
     libgsl-dev \
     libpng-dev \
@@ -16,22 +17,20 @@ RUN apt-get update && apt-get install -y \
     libfribidi-dev \
     libfreetype6-dev \
     libglpk-dev \
-    build-essential \
     libreadline-dev \
     gfortran \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+    build-essential \
+    curl \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Install CRAN packages first
-RUN R -e "install.packages(c('tidyverse', 'future', 'remotes'), repos='https://cloud.r-project.org')"
+# Set a stable CRAN mirror
+RUN echo 'options(repos = c(CRAN = "https://cloud.r-project.org"))' >> /usr/local/lib/R/etc/Rprofile.site
 
-# Install BiocManager separately first
-RUN R -e "install.packages('BiocManager', repos='https://cloud.r-project.org')"
+# Install CRAN packages
+RUN Rscript -e "install.packages(c('Seurat', 'future', 'remotes', 'BiocManager', 'knitr'))"
 
-# THEN install Bioconductor packages
-#RUN R -e "BiocManager::install('SingleCellExperiment', ask = FALSE)"
-#RUN R -e "BiocManager::install('glmGamPoi', ask = FALSE)"
-#RUN R -e "BiocManager::install('EnhancedVolcano', ask = FALSE)"
+# Install CRAN dependencies required by Bioc packages
+RUN Rscript -e "install.packages(c('matrixStats', 'abind'))"
 
-# Optionally install Seurat last (avoids dependency conflicts)
-RUN R -e "install.packages('Seurat', repos='https://cloud.r-project.org')"
+# Install Bioconductor packages
+RUN Rscript -e "BiocManager::install(c('SingleCellExperiment', 'glmGamPoi', 'EnhancedVolcano', 'MatrixGenerics', 'S4Arrays', 'SparseArray'), ask = FALSE)"
