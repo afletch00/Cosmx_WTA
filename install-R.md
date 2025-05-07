@@ -14,10 +14,12 @@ Select Download R for macOS or Windows (or Linux) depending on your computer's o
 
 Select choice "2: Install RStudio", assuming you already have R installed.
 
-#### 3 In RStudio, in the console window, enter the following R command:
+#### 3 In RStudio, in the console window, copy and paste the following R commands:
 
 ```r
 install.packages(c("tidyverse", "Seurat", "future", "remotes", "BiocManager" "patchwork""), 
 repos='https://cran.rstudio.com/')
+```
+```r
 BiocManager::install(c("SingleCellExperiment", "glmGamPoi", "EnhancedVolcano"))
 ```
