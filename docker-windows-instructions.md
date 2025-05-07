@@ -72,7 +72,7 @@ In your browser, open http://localhost:8787/
 Log in with:
 
 - Username: rstudio
-- Password: xx (the password you set in the `docker run` command)
+- Password: xxx (the password you set in the `docker run` command)
 
 In the `Files` tab you should see a single folder, your `project` folder. In the R `Console` tab, you should enter
 
