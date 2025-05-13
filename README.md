@@ -11,7 +11,7 @@
 
 ## Things you need to do before class:
 - For R:
-** Download the most current version of R if you don't already have it (see the document titled `install-R.md` for instructions)
+** Download the most current version of R if you don't already have it (see the document titled `install-R.md` for instructions on downloading R and the libraries you will need to install)
 
 - Download the data from the Box folder I invited you to, and put it in the folder you want to work out of
 ** The data we will put into R is a single object- so_panc_cosmxWTA_sct.rds. This is a large file of ~2GB
