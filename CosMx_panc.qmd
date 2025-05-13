@@ -49,14 +49,14 @@ library(openxlsx)
 library(ggplot2)
 library(future)
 library(EnhancedVolcano)
-
+# Sets working environment to hold larger data objects
 options(future.globals.maxSize = 8000 * 1024^2)
 ```
 
 # Plot colors
 
 ```{r helper_functions}
-# Define color palette using glasbey and polychrome colors
+# Define color palette using glasbey and polychrome colors (uses Seurat package)
 colors_20 <- DiscretePalette(20, palette = "glasbey", shuffle = FALSE)
 colors_10 <- DiscretePalette(10, palette = "polychrome", shuffle = FALSE)
 ```
@@ -65,15 +65,14 @@ colors_10 <- DiscretePalette(10, palette = "polychrome", shuffle = FALSE)
 
 ```{r read data}
 # This is a Seurat object
-so_panc <- readRDS("~/Documents/GCB_Academy_2025/spatial_biology/cosmxsinglecell/so_panc_cosmxWTA_sct.rds")
+## Change path!
+so_panc <- readRDS("~/Documents/GCB_Academy_2025/spatial_biology/cosmxsinglecell/so_panc_cosmxWTA_sct.rds") 
 Idents(so_panc) <- "types"
 ```
 
-# Data Visualization
+# Basic Visualization
 
-## Spatial Visualization {.tabset .tabset-fade}
-
-### Single FOV
+### Single FOV (field of view)
 
 ```{r}
 #| label: single_fov
@@ -95,8 +94,9 @@ ImageDimPlot(object = so_panc, fov = "zoom1", group.by = "types", axes = TRUE, c
 ImageDimPlot(object = so_panc, fov = "zoom4", group.by = "types", axes = TRUE, cols = "glasbey")
 ```
 
-## Gene Expression {.tabset .tabset-fade}
+# Gene Expression Visualizations
 
+### Assign marker genes to variables
 ```{r}
 molsAll <- c("GCG", "EPCAM", "PRSS1", "C1QA",
           "ACTA2", "CD3E", "INS", "CD163", "CD86")
@@ -106,37 +106,26 @@ molsMacs <- c("CD68", "CD163", "CD86", "CSF1R", "MARCO")
 molsPSC <- c("FAP", "ACTA2", "COL1A1", "PDGFRA")
 ```
 
-### All Genes
-
-```{r}
-#| label: molecule_visualization
-#| fig-width: 10
-#| fig-height: 8
-# Plot molecules in single zoom segment
-ImageDimPlot(so_panc, fov = "zoom1", cols = "polychrome", alpha = 0.25, molecules = molsAll, 
-             mols.size = 0.35, nmols = 20000, border.color = "black", coord.fixed = FALSE)
-```
-
 ### Ductal Markers
 
 ```{r}
 #| label: ductal_markers
 #| fig-width: 10
 #| fig-height: 8
-# Plot ductal markers
+# Plot ductal markers (molecules) in single zoom segment
 ImageDimPlot(so_panc, fov = "zoom1", cols = "polychrome", alpha = 0.25, molecules = molsDuct, 
-             mols.size = 0.35, nmols = 20000, border.color = "black", coord.fixed = FALSE)
+             mols.size = 0.77, nmols = 20000, border.color = "black", coord.fixed = FALSE)
 ```
 
-### T Cell Markers
+### Beta Cell Markers
 
 ```{r}
-#| label: tcell_markers
+#| label: betacell_markers
 #| fig-width: 10
 #| fig-height: 8
-# Plot T cell markers
+# Plot Beta cell markers
 ImageDimPlot(so_panc, fov = "zoom1", cols = "polychrome", alpha = 0.25, molecules = molsBeta, 
-             mols.size = 0.35, nmols = 20000, border.color = "black", coord.fixed = FALSE)
+             mols.size = 0.77, nmols = 20000, border.color = "black", coord.fixed = FALSE)
 ```
 
 ### Macrophage Markers
@@ -147,17 +136,28 @@ ImageDimPlot(so_panc, fov = "zoom1", cols = "polychrome", alpha = 0.25, molecule
 #| fig-height: 8
 # Plot macrophage markers
 ImageDimPlot(so_panc, fov = "zoom1", cols = "polychrome", alpha = 0.25, molecules = molsMacs, 
-             mols.size = 0.35, nmols = 20000, border.color = "black", coord.fixed = FALSE)
+             mols.size = 0.77, nmols = 20000, border.color = "black", coord.fixed = FALSE)
 ```
 
-### PSC Markers
+### PSC (pancreatic stellate cell) Markers
 
 ```{r}
 #| label: psc_markers
 #| fig-width: 10
 #| fig-height: 8
-# Plot PSC markers
+# Plot PSC markers- these are the fibroblasts of the pancreas
 ImageDimPlot(so_panc, fov = "zoom1", cols = "polychrome", alpha = 0.25, molecules = molsPSC, 
+             mols.size = 0.77, nmols = 20000, border.color = "black", coord.fixed = FALSE)
+```
+
+### All Cells Marker Genes
+
+```{r}
+#| label: molecule_visualization
+#| fig-width: 10
+#| fig-height: 8
+# Plot a group of marker genes for all cell types
+ImageDimPlot(so_panc, fov = "zoom1", cols = "polychrome", alpha = 0.25, molecules = molsAll, 
              mols.size = 0.35, nmols = 20000, border.color = "black", coord.fixed = FALSE)
 ```
 
@@ -169,17 +169,17 @@ ImageDimPlot(so_panc, fov = "zoom1", cols = "polychrome", alpha = 0.25, molecule
 #| fig-height: 8
 # Plot cell type specific genes in specific cells
 ImageDimPlot(so_panc, fov = "zoom1", cells = WhichCells(so_panc, 
-            idents = c("Acinar.1", "Acinar.2", "Ductal","Macrophage")), 
-             cols = colors_10, size = 0.6,
-             molecules = c("MUC1", "SPINK1", "CD14"),
-             alpha = 0.35, mols.size = 0.7, mols.cols = c("blue", "green", "yellow"))
+             # subset to the cells that you want to visualize
+             idents = c("Acinar.1", "Acinar.2", "Ductal","Macrophage")), 
+             cols = c("red", "green", "blue", "white"), 
+             molecules = c("SLC4A4", "SYCN", "LYZ"),
+             alpha = 0.3, mols.size = 0.77, mols.cols = c("cyan", "yellow", "purple"))
 ```
 
-# Single-Cell Analysis
+# Single-Cell Analysis: all cells in the dataset (all FOVs)
 
-## UMAP Visualization {.tabset}
+### UMAP Visualization - visualize clusters
 
-### Visualize by cluster
 ```{r}
 #| label: single_cell_analysis_clusters
 #| fig-width: 10
@@ -188,7 +188,8 @@ ImageDimPlot(so_panc, fov = "zoom1", cells = WhichCells(so_panc,
 DimPlot(so_panc, group.by = "seurat_clusters") + scale_color_manual(values = colors_20)
 ```
 
-### Visualize by cell type
+### Visualize cell types
+
 ```{r}
 #| label: single_cell_analysis_cells
 #| fig-width: 10
@@ -197,9 +198,10 @@ DimPlot(so_panc, group.by = "seurat_clusters") + scale_color_manual(values = col
 DimPlot(so_panc) + scale_color_manual(values = colors_20)
 ```
 
-## Gene Expression Plots {.tabset}
+## Gene Expression Plots
 
 ### Violin plot
+
 ```{r}
 #| label: gene_expression_violin
 #| fig-width: 10
@@ -210,17 +212,24 @@ VlnPlot(so_panc, features = c("VIM", "PRSS1"), assay = "SCT",
 ```
 
 ### Feature plot
+
 ```{r}
 #| label: gene_expression_feature
 #| fig-width: 10
 #| fig-height: 8
-FeaturePlot(so_panc, features = c("KRT17", "VIM", "PRSS1", "CD163"), 
+FeaturePlot(so_panc, features = c("KRT17", "VIM", "CD163", "PRSS1"), 
             max.cutoff = "q95")
 ```
 
+* What do you notice about the Acinar cell marker, PRSS1?
+
+
 # Differential Expression Analysis
 
-## Find Markers
+### Find Markers between Acinar.1 and Acinar.2: 
+I already ran the `FindMarkers` algorithm in Seurat since it took me almost 10mins on my laptop.
+Read in the differentially expressed genes table.
+Change the path to where you downloaded the data to.
 
 ```{r}
 #| label: differential_expression_find_markers
@@ -237,7 +246,7 @@ acini_markers <- openxlsx::read.xlsx("~/Documents/GCB_Academy_2025/spatial_biolo
                     rowNames = TRUE) ### Change the path to where your excel file is!
 ```
 
-## Volcano Plot
+### Volcano Plot of DEGs
 
 ```{r}
 #| label: differential_expression_volcano
@@ -274,14 +283,15 @@ EnhancedVolcano(acini_markers,
 
 # Interactive Exploration
 
-## See if/where your favorite genes show up in the pancreas
+### See if/where your favorite genes show up in the pancreas
 
 ```{r}
 #| label: gene_explore
 #| fig-width: 10
 #| fig-height: 8
-my_genes <- c("SOX9")
+my_genes <- c("SOX9") # Add up to 5 genes here
 
-ImageDimPlot(so_panc, fov = "zoom4", cols = "polychrome", alpha = 0.3, molecules = my_genes, 
+ImageDimPlot(so_panc, fov = "zoom4", # you can also change this to "zoom1"
+             cols = "polychrome", alpha = 0.35, molecules = my_genes, 
              mols.size = 0.35, nmols = 20000, border.color = "black", coord.fixed = FALSE)
 ``` 
