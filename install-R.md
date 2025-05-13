@@ -17,9 +17,9 @@ Select choice "2: Install RStudio", assuming you already have R installed.
 #### 3 In RStudio, in the console window, copy and paste the following R commands:
 
 ```r
-install.packages(c("tidyverse", "Seurat", "future", "remotes", "BiocManager" "patchwork""), 
+install.packages(c("tidyverse", "Seurat", "future", "BiocManager", "patchwork", "openxlsx"), 
 repos='https://cran.rstudio.com/')
 ```
 ```r
-BiocManager::install(c("SingleCellExperiment", "glmGamPoi", "EnhancedVolcano"))
+BiocManager::install(c("EnhancedVolcano"))
 ```
